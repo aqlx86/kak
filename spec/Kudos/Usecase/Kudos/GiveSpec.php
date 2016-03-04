@@ -17,14 +17,15 @@ class GiveSpec extends ObjectBehavior
      * @param Kudos\Domain\Entity\User $giver
      * @param Kudos\Domain\Entity\User $receiver
      * @param Kudos\Domain\Repository\User\Kudos $repository
+     * @param Kudos\Domain\Validator\Validator $validator
      */
-    function let($kudos, $giver, $receiver, $repository)
+    function let($kudos, $giver, $receiver, $repository, $validator)
     {
         $giver->id = 'id';
         $receiver->id = 'id';
         $kudos->increase_by(1);
 
-        $this->beConstructedWith($kudos, $giver, $receiver, $repository);
+        $this->beConstructedWith($kudos, $giver, $receiver, $repository, $validator);
     }
 
     function it_can_give_1_kudos_point_to_user($kudos, $giver, $receiver, $repository, $points)
@@ -39,22 +40,67 @@ class GiveSpec extends ObjectBehavior
         $this->give();
     }
 
-    /**
-     * @param Kudos\Tools\Validator\User $user_validator
-     * @param Kudos\Tools\Validator\User $validator
-     */
-    function it_validates_the_giver_and_receiver_existence($giver, $user_validator, $validator)
+    function it_can_validate($kudos, $giver, $receiver, $validator, $points)
     {
-        $giver->validate()
+        $kudos->get_count()
             ->shouldBeCalled()
-            ->willReturn($user_validator);
+            ->willReturn($points);
 
-        $user_validator->is_existing()
+        $inputs = [
+            'points' => $points,
+            'giver_id' => $giver->id,
+            'receiver_id' => $receiver->id
+        ];
+
+        $validator->setup($inputs)
+            ->shouldBeCalled();
+
+        $validator->set_required('points')
+            ->shouldBeCalled();
+        $validator->set_required('giver_id')
+            ->shouldBeCalled();
+        $validator->set_required('receiver_id')
+            ->shouldBeCalled();
+
+        $validator->validate()
             ->shouldBeCalled()
             ->willReturn(true);
 
         $this->validate()
             ->shouldReturn(true);
+    }
 
+    function it_can_validate_then_fail($kudos, $giver, $receiver, $validator, $points)
+    {
+        $kudos->get_count()
+            ->shouldBeCalled()
+            ->willReturn($points);
+
+        $inputs = [
+            'points' => $points,
+            'giver_id' => $giver->id,
+            'receiver_id' => $receiver->id
+        ];
+
+        $validator->setup($inputs)
+            ->shouldBeCalled();
+
+        $validator->set_required('points')
+            ->shouldBeCalled();
+        $validator->set_required('giver_id')
+            ->shouldBeCalled();
+        $validator->set_required('receiver_id')
+            ->shouldBeCalled();
+
+        $validator->validate()
+            ->shouldBeCalled()
+            ->willReturn(false);
+
+        $validator->get_errors()
+            ->shouldBeCalled()
+            ->willReturn([]);
+
+        $this->shouldThrow('Kudos\Exception\Validation')
+            ->duringValidate();
     }
 }

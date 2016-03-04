@@ -1,6 +1,6 @@
 <?php
 
-namespace Kudos\Tools\Exception;
+namespace Kudos\Exception;
 
 abstract class Exception extends \Exception
 {

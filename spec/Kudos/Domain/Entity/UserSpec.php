@@ -12,14 +12,6 @@ class UserSpec extends ObjectBehavior
         $this->shouldHaveType('Kudos\Domain\Entity\User');
     }
 
-    /**
-     * @param Kudos\Tools\Validator\User $validator
-     */
-    function let($validator)
-    {
-        $this->beConstructedWith($validator);
-    }
-
     function it_has_an_id()
     {
         $this->id->shouldBe(null);

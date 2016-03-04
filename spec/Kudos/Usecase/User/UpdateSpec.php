@@ -15,14 +15,15 @@ class UpdateSpec extends ObjectBehavior
     /**
      * @param Kudos\Domain\Entity\User $user
      * @param Kudos\Domain\Repository\User $repository
+     * @param Kudos\Domain\Validator\Validator $validator
      */
-    function let($user, $repository)
+    function let($user, $repository, $validator)
     {
         $user->username = 'username';
         $user->password = 'password';
         $user->email = 'email';
 
-        $this->beConstructedWith($user, $repository);
+        $this->beConstructedWith($user, $repository, $validator);
     }
 
     function it_can_update_the_user($user, $repository)
@@ -39,17 +40,25 @@ class UpdateSpec extends ObjectBehavior
             ->shouldReturn(true);
     }
 
-    /**
-     * @param Kudos\Tools\Validator\User $user_validator
-     * @param Kudos\Tools\Validator\User $validator
-     */
-    function it_validates_the_user_entity($user, $user_validator, $validator)
+    function it_validates_the_user_entity($user, $validator)
     {
-        $user->validate()
-            ->shouldBeCalled()
-            ->willReturn($user_validator);
+        $inputs = [
+            'username' => $user->username,
+            'email' => $user->email,
+            'password' => $user->password
+        ];
 
-        $user_validator->update()
+        $validator->setup($inputs)
+            ->shouldBeCalled();
+
+        $validator->set_required('username')
+            ->shouldBeCalled();
+        $validator->set_required('email')
+            ->shouldBeCalled();
+        $validator->set_required('password')
+            ->shouldBeCalled();
+
+        $validator->validate()
             ->shouldBeCalled()
             ->willReturn(true);
 
@@ -57,29 +66,33 @@ class UpdateSpec extends ObjectBehavior
             ->shouldReturn(true);
     }
 
-    /**
-     * @param Kudos\Tools\Validator\User $user_validator
-     * @param Kudos\Tools\Validator\User $validator
-     */
-    function it_validates_the_user_entity_then_fail($user, $user_validator, $validator)
+    function it_validates_the_user_entity_then_fail($user, $validator)
     {
-        $user->validate()
-            ->shouldBeCalled()
-            ->willReturn($user_validator);
+        $inputs = [
+            'username' => $user->username,
+            'email' => $user->email,
+            'password' => $user->password
+        ];
 
-        $user_validator->update()
+        $validator->setup($inputs)
+            ->shouldBeCalled();
+
+        $validator->set_required('username')
+            ->shouldBeCalled();
+        $validator->set_required('email')
+            ->shouldBeCalled();
+        $validator->set_required('password')
+            ->shouldBeCalled();
+
+        $validator->validate()
             ->shouldBeCalled()
             ->willReturn(false);
-
-        $user->validator()
-            ->shouldBeCalled()
-            ->willReturn($validator);
 
         $validator->get_errors()
             ->shouldBeCalled()
             ->willReturn([]);
 
-        $this->shouldThrow('Kudos\Tools\Exception\Validation')
+        $this->shouldThrow('Kudos\Exception\Validation')
             ->duringValidate();
     }
 }
