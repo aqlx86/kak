@@ -2,15 +2,21 @@
 
 namespace Kudos\Domain\Entity;
 
-
 abstract class Entity
 {
-    /**
-     * return properties
-     */
     public function to_array()
     {
-        return [];
+        $reflection = new \ReflectionClass(get_called_class());
+
+        $properties = array();
+
+        foreach ($reflection->getProperties(\ReflectionProperty::IS_PUBLIC) as $property)
+        {
+            if (isset($this->{$property->getName()}))
+                $properties[$property->getName()] = $this->{$property->getName()};
+        }
+
+        return $properties;
     }
 
     public function validator()
