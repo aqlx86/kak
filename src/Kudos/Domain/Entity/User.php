@@ -7,10 +7,13 @@ use Kudos\Tools\Validator\User as UserValidator;
 
 class User extends Entity
 {
+    public $id;
     public $username;
     public $email;
+    public $password;
 
     protected $validator;
+    protected $kudos;
 
     public function __construct(UserValidator $validator)
     {

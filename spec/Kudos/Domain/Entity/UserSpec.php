@@ -20,6 +20,11 @@ class UserSpec extends ObjectBehavior
         $this->beConstructedWith($validator);
     }
 
+    function it_has_an_id()
+    {
+        $this->id->shouldBe(null);
+    }
+
     function it_has_an_email()
     {
         $this->email->shouldBe(null);
@@ -30,4 +35,8 @@ class UserSpec extends ObjectBehavior
         $this->username->shouldBe(null);
     }
 
+    function it_has_a_password()
+    {
+        $this->password->shouldBe(null);
+    }
 }
