@@ -1,0 +1,7 @@
+/bin
+/vendor
+/node_modules
+.env
+/behat.yml
+/worker.conf
+/logs/
