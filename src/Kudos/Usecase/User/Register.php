@@ -25,7 +25,9 @@ class Register
         $this->validate();
 
         $this->repository->create_user(
-            $this->user->username, $this->user->email, $this->user->password
+            $this->user->username,
+            $this->user->email,
+            $this->user->hash_password()
         );
 
         return $this->repository->get_created_id();

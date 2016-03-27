@@ -26,11 +26,15 @@ class RegisterSpec extends ObjectBehavior
         $this->beConstructedWith($user, $repository, $validator);
     }
 
-    function it_creates_the_user($user, $repository, $validator)
+    function it_creates_the_user($user, $repository, $validator, $hashed_password)
     {
         $this->it_validates_the_user_entity($user, $validator);
 
-        $repository->create_user($user->username, $user->email, $user->password)
+        $user->hash_password()
+            ->shouldBeCalled()
+            ->willReturn($hashed_password);
+
+        $repository->create_user($user->username, $user->email, $hashed_password)
             ->shouldBeCalled();
 
         $repository->get_created_id()

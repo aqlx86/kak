@@ -13,6 +13,6 @@ class User extends Entity
 
     public function hash_password()
     {
-        return $this->password;
+        return bcrypt($this->password);
     }
 }
