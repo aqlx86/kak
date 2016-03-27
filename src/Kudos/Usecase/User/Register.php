@@ -4,7 +4,7 @@ namespace Kudos\Usecase\User;
 
 use Kudos\Domain\Entity\User;
 use Kudos\Domain\Repository\User as UserRepository;
-use Kudos\Domain\Validator\Validator as Validator;
+use Kudos\Domain\Validator\User as UserValidator;
 use Kudos\Exception;
 
 class Register
@@ -13,7 +13,7 @@ class Register
     protected $repository;
     protected $validator;
 
-    public function __construct(UserRepository $repository, Validator $validator)
+    public function __construct(UserRepository $repository, UserValidator $validator)
     {
         $this->repository = $repository;
         $this->validator = $validator;
@@ -21,7 +21,14 @@ class Register
 
     public function register(User $user)
     {
-        $this->validate();
+        $this->validator->setup([
+            'username' => $user->username,
+            'email' => $user->email,
+            'password' => $user->password,
+        ]);
+
+        if (! $this->validator->validate('register'))
+            throw new Exception\Validation($this->validator->get_errors());
 
         $this->repository->create_user(
             $this->user->username, $this->user->email, $this->user->password
@@ -30,24 +37,5 @@ class Register
         $id = $this->repository->get_created_id();
 
         return $id;
-    }
-
-    public function validate()
-    {
-        $inputs = [
-            'username' => $this->user->username,
-            'email' => $this->user->email,
-            'password' => $this->user->password,
-        ];
-
-        $this->validator->setup($inputs);
-        $this->validator->add_required_rule('username');
-        $this->validator->add_required_rule('email');
-        $this->validator->add_email_rule('email');
-        $this->validator->add_required_rule('password');
-        $this->validator->add_min_length_rule('password', 8);
-
-        if (! $this->validator->validate())
-            throw new Exception\Validation($this->validator->get_errors());
     }
 }
