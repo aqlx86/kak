@@ -21,16 +21,25 @@ class UpdateSpec extends ObjectBehavior
     {
         $user->id = 'id';
         $user->username = 'username';
+        $user->password = 'password';
 
         $this->beConstructedWith($user, $repository, $validator);
     }
 
-    function it_can_update_the_user($user, $repository)
+    function it_can_update_the_user($user, $repository, $hash_password)
     {
         $user_data = [];
 
         if ($user->username)
             $user_data['username'] = $user->username;
+
+        if ($user->password)
+        {
+            $user->hash_password()
+                ->shouldBeCalled()->willReturn($hash_password);
+
+            $user_data['password'] = $hash_password;
+        }
 
         $repository->update_user('id', $user_data)
             ->shouldBeCalled()

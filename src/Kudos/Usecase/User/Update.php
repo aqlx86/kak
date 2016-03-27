@@ -37,7 +37,7 @@ class Update
             $user_data['email'] = $this->user->email;
 
         if ($this->user->password)
-            $user_data['password'] = $this->user->password;
+            $user_data['password'] = $this->user->hash_password();
 
         return $this->repository->update_user($this->user->id, $user_data);
     }
