@@ -20,12 +20,6 @@ class Update
         $this->validator = $validator;
     }
 
-    public function run()
-    {
-        $this->validate();
-        $this->update();
-    }
-
     public function update()
     {
         $user_data = [];
