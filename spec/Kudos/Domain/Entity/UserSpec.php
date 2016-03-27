@@ -31,4 +31,9 @@ class UserSpec extends ObjectBehavior
     {
         $this->password->shouldBe(null);
     }
+
+    function it_can_hash_the_password($encryptor, $hash)
+    {
+        $this->hash_password();
+    }
 }

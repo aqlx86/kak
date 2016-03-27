@@ -41,20 +41,12 @@ class Give
         ];
 
         $this->validator->setup($inputs);
-        $this->validator->set_required('points');
-        $this->validator->set_required('giver_id');
-        $this->validator->set_required('receiver_id');
+        $this->validator->add_required_rule('points');
+        $this->validator->add_required_rule('giver_id');
+        $this->validator->add_required_rule('receiver_id');
 
         if (! $this->validator->validate())
             throw new Exception\Validation($this->validator->get_errors());
-
-        return true;
-    }
-
-    public function validate2()
-    {
-        if (! $this->giver->validate()->is_existing())
-            throw new Exception\Validation($this->giver->validator()->get_errors());
 
         return true;
     }

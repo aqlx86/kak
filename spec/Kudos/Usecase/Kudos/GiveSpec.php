@@ -55,11 +55,11 @@ class GiveSpec extends ObjectBehavior
         $validator->setup($inputs)
             ->shouldBeCalled();
 
-        $validator->set_required('points')
+        $validator->add_required_rule('points')
             ->shouldBeCalled();
-        $validator->set_required('giver_id')
+        $validator->add_required_rule('giver_id')
             ->shouldBeCalled();
-        $validator->set_required('receiver_id')
+        $validator->add_required_rule('receiver_id')
             ->shouldBeCalled();
 
         $validator->validate()
@@ -85,11 +85,11 @@ class GiveSpec extends ObjectBehavior
         $validator->setup($inputs)
             ->shouldBeCalled();
 
-        $validator->set_required('points')
+        $validator->add_required_rule('points')
             ->shouldBeCalled();
-        $validator->set_required('giver_id')
+        $validator->add_required_rule('giver_id')
             ->shouldBeCalled();
-        $validator->set_required('receiver_id')
+        $validator->add_required_rule('receiver_id')
             ->shouldBeCalled();
 
         $validator->validate()

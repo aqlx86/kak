@@ -13,15 +13,16 @@ class Register
     protected $repository;
     protected $validator;
 
-    public function __construct(User $user, UserRepository $repository, Validator $validator)
+    public function __construct(UserRepository $repository, Validator $validator)
     {
-        $this->user = $user;
         $this->repository = $repository;
         $this->validator = $validator;
     }
 
-    public function register()
+    public function register(User $user)
     {
+        $this->validate();
+
         $this->repository->create_user(
             $this->user->username, $this->user->email, $this->user->password
         );
@@ -40,13 +41,13 @@ class Register
         ];
 
         $this->validator->setup($inputs);
-        $this->validator->set_required('username');
-        $this->validator->set_required('email');
-        $this->validator->set_required('password');
+        $this->validator->add_required_rule('username');
+        $this->validator->add_required_rule('email');
+        $this->validator->add_email_rule('email');
+        $this->validator->add_required_rule('password');
+        $this->validator->add_min_length_rule('password', 8);
 
         if (! $this->validator->validate())
             throw new Exception\Validation($this->validator->get_errors());
-
-        return true;
     }
 }

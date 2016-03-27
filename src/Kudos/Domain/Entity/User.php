@@ -10,4 +10,9 @@ class User extends Entity
     public $username;
     public $email;
     public $password;
+
+    public function hash_password()
+    {
+        return $this->password;
+    }
 }

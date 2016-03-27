@@ -50,11 +50,19 @@ class RegisterSpec extends ObjectBehavior
         $validator->setup($inputs)
             ->shouldBeCalled();
 
-        $validator->set_required('username')
+        $validator->add_required_rule('username')
+                ->shouldBeCalled();
+
+        $validator->add_required_rule('email')
+                ->shouldBeCalled();
+
+        $validator->add_email_rule('email')
             ->shouldBeCalled();
-        $validator->set_required('email')
-            ->shouldBeCalled();
-        $validator->set_required('password')
+
+        $validator->add_required_rule('password')
+                ->shouldBeCalled();
+
+        $validator->add_min_length_rule('password', 8)
             ->shouldBeCalled();
 
         $validator->validate()
@@ -76,11 +84,19 @@ class RegisterSpec extends ObjectBehavior
         $validator->setup($inputs)
             ->shouldBeCalled();
 
-        $validator->set_required('username')
+        $validator->add_required_rule('username')
+                ->shouldBeCalled();
+
+        $validator->add_required_rule('email')
+                ->shouldBeCalled();
+
+        $validator->add_email_rule('email')
             ->shouldBeCalled();
-        $validator->set_required('email')
-            ->shouldBeCalled();
-        $validator->set_required('password')
+
+        $validator->add_required_rule('password')
+                ->shouldBeCalled();
+
+        $validator->add_min_length_rule('password', 8)
             ->shouldBeCalled();
 
         $validator->validate()
