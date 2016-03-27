@@ -9,4 +9,6 @@ interface User
     public function get_created_id();
 
     public function update_user($id, array $details);
+
+    public function view($id);
 }
