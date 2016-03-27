@@ -1,4 +1,10 @@
 {
+    "name": "aqlx86/kudos",
+    "description": "Kudos.",
+    "keywords": ["kudos"],
+    "license": "MIT",
+    "type": "project",
+
     "require-dev": {
         "phpspec/phpspec": "~2.0"
     },
