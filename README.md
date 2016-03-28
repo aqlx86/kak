@@ -1,5 +1,4 @@
-# Kudos Core
-Framework agnostic library for Kudos
+# KaK (Kudos and Kindness)
 
 Install dependencies
 ```
