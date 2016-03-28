@@ -1,44 +1,39 @@
 <?php
 
-namespace Kudos\Usecase\User;
+namespace Usecase\People;
 
-use Kudos\Domain\Entity\User;
-use Kudos\Domain\Repository\User as UserRepository;
-use Kudos\Domain\Validator\Validator as Validator;
-use Kudos\Exception;
+use Domain\Entity\People;
+use Domain\Repository\People as Repository;
+use Tools\Validator;
+use Exception;
+
+use Usecase\People\Join\Submission;
 
 class Register
 {
-    protected $user;
+    protected $people;
     protected $repository;
     protected $validator;
 
-    public function __construct(User $user, UserRepository $repository, Validator $validator)
+    public function __construct(People $people, Repository $repository, Validator $validator)
     {
-        $this->user = $user;
+        $this->people = $people;
         $this->repository = $repository;
         $this->validator = $validator;
     }
 
     public function register()
     {
-        $this->validate();
-
-        $this->repository->create_user(
-            $this->user->username,
-            $this->user->email,
-            $this->user->hash_password()
-        );
-
-        return $this->repository->get_created_id();
+        $submission = new Submission($this->people, $this->repository);
+        return $submission->join();
     }
 
     public function validate()
     {
         $inputs = [
-            'username' => $this->user->username,
-            'email' => $this->user->email,
-            'password' => $this->user->password,
+            'username' => $this->people->username,
+            'email' => $this->people->email,
+            'password' => $this->people->password,
         ];
 
         $this->validator->setup($inputs);
@@ -53,5 +48,11 @@ class Register
             throw new Exception\Validation($this->validator->get_errors());
 
         return true;
+    }
+
+    public function execute()
+    {
+        $this->validate();
+        return $this->register();
     }
 }

@@ -31,4 +31,14 @@ class PeopleSpec extends ObjectBehavior
     {
         $this->password->shouldBe(null);
     }
+
+    function it_can_be_verified()
+    {
+        $this->is_verified->shouldBe(false);
+    }
+
+    function it_can_be_invited()
+    {
+        $this->is_invited->shouldBe(null);
+    }
 }

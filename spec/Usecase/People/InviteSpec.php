@@ -1,56 +1,44 @@
 <?php
 
-namespace spec\Kudos\Usecase\User;
+namespace spec\Usecase\People;
 
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
-class RegisterSpec extends ObjectBehavior
+class InviteSpec extends ObjectBehavior
 {
     function it_is_initializable()
     {
-        $this->shouldHaveType('Kudos\Usecase\User\Register');
+        $this->shouldHaveType('Usecase\People\Invite');
     }
 
     /**
-     * @param Kudos\Domain\Entity\User $user
-     * @param Kudos\Domain\Repository\User $repository
-     * @param Kudos\Domain\Validator\Validator $validator
+     * @param Domain\Entity\People $people
+     * @param Domain\Repository\People $repository
+     * @param Tools\Validator $validator
      */
-    function let($user, $repository, $validator)
+    function let($people, $repository, $validator)
     {
-        $user->username = 'john';
-        $user->email = 'john@kudos.com';
-        $user->password = 'password';
-
-        $this->beConstructedWith($user, $repository, $validator);
+        $this->beConstructedWith($people, $repository, $validator);
     }
 
-    function it_creates_the_user($user, $repository, $validator, $hashed_password)
+    function it_can_invite_someone($people, $repository, $submission)
     {
-        $this->it_validates_the_user_entity($user, $validator);
+        $people->is_invited = true;
 
-        $user->hash_password()
-            ->shouldBeCalled()
-            ->willReturn($hashed_password);
+        $submission->beADoubleOf('Usecase\People\Join\Submission', [$people, $repository]);
+        // @todo this should be called
+        $submission->join();
 
-        $repository->create_user($user->username, $user->email, $hashed_password)
-            ->shouldBeCalled();
-
-        $repository->get_created_id()
-            ->shouldBeCalled()
-            ->willReturn('id');
-
-        $this->register($user)
-            ->shouldReturn('id');
+        $this->invite();
     }
 
-    function it_validates_the_user_entity($user, $validator)
+    function it_can_validate_user($people, $validator)
     {
         $inputs = [
-            'username' => $user->username,
-            'email' => $user->email,
-            'password' => $user->password
+            'username' => $people->username,
+            'email' => $people->email,
+            'password' => $people->password
         ];
 
         $validator->setup($inputs)
@@ -77,14 +65,16 @@ class RegisterSpec extends ObjectBehavior
 
         $this->validate()
             ->shouldReturn(true);
+
+        $this->validate();
     }
 
-    function it_validates_the_user_entity_then_fail($user, $validator)
+    function it_validates_the_user_then_fail($people, $validator)
     {
         $inputs = [
-            'username' => $user->username,
-            'email' => $user->email,
-            'password' => $user->password
+            'username' => $people->username,
+            'email' => $people->email,
+            'password' => $people->password
         ];
 
         $validator->setup($inputs)
@@ -113,7 +103,15 @@ class RegisterSpec extends ObjectBehavior
             ->shouldBeCalled()
             ->willReturn([]);
 
-        $this->shouldThrow('Kudos\Exception\Validation')
+        $this->shouldThrow('Exception\Validation')
             ->duringValidate();
+    }
+
+    function it_can_execute_the_usecase($people, $repository, $submission, $validator)
+    {
+        $this->it_can_validate_user($people, $validator);
+        $this->it_can_invite_someone($people, $repository, $submission);
+
+        $this->execute();
     }
 }

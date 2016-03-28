@@ -8,6 +8,8 @@ class People
     public $username;
     public $email;
     public $password;
+    public $is_verified = false;
+    public $is_invited;
 
     public function hash_password()
     {
